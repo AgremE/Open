@@ -1,0 +1,12 @@
+﻿<Window x:Name="windows" x:Class="WPFStylus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFStylus"
+        mc:Ignorable="d"
+        Title="o_pen" Visibility="Visible" WindowStyle="None" AllowsTransparency="True" Opacity="0.5" WindowState="Maximized" Topmost="True">
+    <StackPanel>
+        <InkCanvas x:Name="icBox" StylusMove="stylus_move" Margin="0" StylusSystemGesture="icBox_StylusSystemGesture" EditingMode="GestureOnly" StylusUp="stylus_up"/>
+    </StackPanel>
+</Window>
