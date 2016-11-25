@@ -62,12 +62,17 @@ namespace WPFStylus
             // down = MAX (down, boundary.bottom)
             down = Math.Max(down, boundary.bottom);
 
-            return up - down;
+            return Math.Max(up - down, 0);
         }
 
         public double getArea()
         {
             return (boundary.right - boundary.left) * (boundary.top - boundary.bottom);
+        }
+
+        public Point getMidPoint()
+        {
+            return new Point((boundary.left + boundary.right) / 2, (boundary.top + boundary.bottom) / 2);
         }
     }
 }
