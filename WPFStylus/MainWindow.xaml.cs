@@ -26,7 +26,7 @@ namespace WPFStylus
     
     public partial class MainWindow : Window
     {
-        ArrayList listPoints = new ArrayList();
+        List<Point> listPoints = new List<Point>();
 
         const int WS_EX_TRANSPARENT = 0x00000020;
         const int GWL_EXSTYLE = (-20);
@@ -215,6 +215,15 @@ namespace WPFStylus
             LeftMouseClick((int)x_coordinate, (int)y_coordinate);
 
             SetWindowLong(hWnd, GWL_EXSTYLE, extendedStyle);
+
+            IconSelector selector = new IconSelector();
+
+            // Add Dummy Icon
+            selector.AddIcon(new Icon(500, 550, 350, 300));
+
+            // Find the best points
+            Point select_pt = selector.Select(listPoints);
+            Console.Write(select_pt);
 
             this.listPoints.Clear();
             //LeftMouseClick((int)x_coordinate, (int)y_coordinate);

@@ -39,7 +39,7 @@ namespace WPFStylus
             // if x-coordinate is not the same, return 0;
             if (above.X != below.X)
             {
-                Console.Write("EclipseArea: Error, x-coordinate is not the same\n");
+                // Console.Write("EclipseArea: Error, x-coordinate is not the same\n");
                 return 0;
             }
 
