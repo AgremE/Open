@@ -70,18 +70,38 @@ namespace WPFStylus
             return x;
         }
 
+        
         public Point Select(List<Point> points)
         {
             // Sort the points in the array list by x
-            List<Point> preprocessed_pts = PreprocessPoints(points);
-            preprocessed_pts.Sort(new PointComparer());
+            List<Point> preprocessed_pts = PreprocessPointsForCircleCompleting(points);
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
+            /*
+            foreach (Point x in preprocessed_pts)
+            {
+                file.WriteLine(x.X + "          " + x.Y);
+            }*/
+            //file.Close();
+            if (!is_completeCircle(points))
+            {
+             //   file.WriteLine("Circle is not complete");
+                points = completeTheCircleByLine(points);
+            }
+            /*
+            file.WriteLine("There after complete the cirlce");
             
-            /*System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
             foreach (Point x in preprocessed_pts)
             {
                 file.WriteLine(x.X + "          " + x.Y);
             }
-            file.Close();*/
+            file.Close();
+            */
+            preprocessed_pts = preprocessed_pts.Distinct().ToList();
+            preprocessed_pts.Sort(new PointComparer());
+            
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
+            
 
 
             // scoring
@@ -94,6 +114,8 @@ namespace WPFStylus
                     Point next_pt = preprocessed_pts[j + 1];
                     scores[i] += IconArray[i].EclipseArea(cur_pt, next_pt);
                 }
+                //Get area in the form of percentage
+                scores[i] = scores[i] / IconArray[i].getArea();
             }
 
             // Find icon with max score
@@ -127,6 +149,25 @@ namespace WPFStylus
 
             // Remove duplicates and return
             return preprocessed_pts.Distinct().ToList();
+        }
+
+        private List<Point> PreprocessPointsForCircleCompleting(List<Point> points)
+        {
+            List<Point> preprocessed_pts = new List<Point>();
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                Point cur_pt = points[i]; // Current point
+                Point next_pt = points[i + 1]; // Next point
+
+                // Add the original rounded point
+                preprocessed_pts.Add(new Point(Math.Round(cur_pt.X), Math.Round(cur_pt.Y)));
+
+                //Add any point between this point and the next point
+                preprocessed_pts.AddRange(GetPointsOnLine((int)cur_pt.X, (int)cur_pt.Y, (int)next_pt.X, (int)next_pt.Y).ToList());
+            }
+
+            // Remove duplicates and return
+            return preprocessed_pts;
         }
 
 
@@ -190,5 +231,36 @@ namespace WPFStylus
             yield break;
         }
 
+        public bool is_completeCircle(List<Point> points)
+        {
+            bool is_complete = false;
+            Point firstPoint = points[0];
+            for(int i = 1; i < points.Count -1; i++)
+            {
+                if(points[i].X == firstPoint.X)
+                {
+                    if(points[i].Y == firstPoint.Y)
+                    {
+                        is_complete = true;
+                    }
+                }
+            }
+            return is_complete;
+        }
+        // Call only when the circle is not complete
+        public List<Point> completeTheCircleByLine(List<Point> points)
+        {
+            //List<Point> complete_circle = new List<Point>();
+            Point firstPoint = points[0];
+            Point finalPoint = points[points.Count - 1];
+            points.AddRange(GetPointsOnLine((int)firstPoint.X, 
+                                                (int)firstPoint.Y,
+                                                    (int)finalPoint.X, 
+                                                           (int)finalPoint.Y).ToList());
+            return points;
+        }
+
+        //End of the class
     }
+    
 }
