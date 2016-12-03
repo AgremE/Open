@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Shapes;
 
 namespace WPFStylus
 {
@@ -73,6 +75,24 @@ namespace WPFStylus
         public Point getMidPoint()
         {
             return new Point((boundary.left + boundary.right) / 2, (boundary.top + boundary.bottom) / 2);
+        }
+
+        public void showArea(InkCanvas canvas)
+        {
+            // Add a Rectangle Element
+            Rectangle myRect = new Rectangle();
+            myRect.Stroke = System.Windows.Media.Brushes.Black;
+            myRect.Fill = System.Windows.Media.Brushes.SkyBlue;
+
+            //myRect.HorizontalAlignment = HorizontalAlignment.Left;
+            //myRect.VerticalAlignment = VerticalAlignment.Center;
+            Thickness margin = myRect.Margin;
+            margin.Left = boundary.left;
+            margin.Top = boundary.top;
+            myRect.Margin = margin;
+            myRect.Height = (boundary.top - boundary.bottom);
+            myRect.Width = (boundary.right - boundary.left);
+            canvas.Children.Add(myRect);
         }
     }
 }

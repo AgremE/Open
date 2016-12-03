@@ -7,6 +7,6 @@
         mc:Ignorable="d"
         Title="o_pen" Visibility="Visible" WindowStyle="None" AllowsTransparency="True" Opacity="0.5" WindowState="Maximized" Topmost="True">
     <StackPanel>
-        <InkCanvas x:Name="icBox" StylusMove="stylus_move" Margin="0" StylusSystemGesture="icBox_StylusSystemGesture" EditingMode="GestureOnly" StylusUp="stylus_up"/>
+        <InkCanvas x:Name="icBox" StylusMove="stylus_move" Margin="0" EditingMode="GestureOnly" StylusUp="stylus_up"/>
     </StackPanel>
 </Window>

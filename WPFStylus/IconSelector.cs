@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Windows.Shapes;
+
 namespace WPFStylus
 {   
     /* Class IconSelector
@@ -41,7 +43,7 @@ namespace WPFStylus
         {
             IconArray = new List<Icon>();
             // add NULL icon
-            IconArray.Add(new Icon(0, 0, 0, 0));
+            IconArray.Add(new Icon(1, 2, 3, 4));
         }
         
         public bool AddIcon(Icon i)
@@ -64,7 +66,7 @@ namespace WPFStylus
         {
             // remove icon from index
             if (i <= 0 || i >= IconArray.Count)
-                return new Icon(0, 0, 0, 0);
+                return new Icon(1, 2, 3, 4);
             Icon x = IconArray[i];
             IconArray.RemoveAt(i);
             return x;
@@ -76,7 +78,7 @@ namespace WPFStylus
             // Sort the points in the array list by x
             List<Point> preprocessed_pts = PreprocessPointsForCircleCompleting(points);
 
-            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
             /*
             foreach (Point x in preprocessed_pts)
             {
@@ -132,25 +134,6 @@ namespace WPFStylus
         /// </summary>
         /// <param name="points">Raw list of Points from stylus</param>
         /// <returns>List of contigeous Points objects</returns>
-        private List<Point> PreprocessPoints(List<Point> points)
-        {
-            List<Point> preprocessed_pts = new List<Point>();
-            for (int i = 0; i < points.Count-1; i++)
-            {
-                Point cur_pt = points[i]; // Current point
-                Point next_pt = points[i+1]; // Next point
-                
-                // Add the original rounded point
-                preprocessed_pts.Add(new Point(Math.Round(cur_pt.X), Math.Round(cur_pt.Y)));
-
-                //Add any point between this point and the next point
-                preprocessed_pts.AddRange(GetPointsOnLine((int)cur_pt.X, (int)cur_pt.Y, (int)next_pt.X, (int)next_pt.Y).ToList());
-            }
-
-            // Remove duplicates and return
-            return preprocessed_pts.Distinct().ToList();
-        }
-
         private List<Point> PreprocessPointsForCircleCompleting(List<Point> points)
         {
             List<Point> preprocessed_pts = new List<Point>();
