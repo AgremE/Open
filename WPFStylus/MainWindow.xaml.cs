@@ -59,7 +59,6 @@ namespace WPFStylus
             // Add Dummy Icon
             Icon i = new Icon(500, 700, 350, 300);
             selector.AddIcon(i);
-            i.showArea(icBox);
         }
 
         private void stylus_move(object sender, StylusEventArgs e)
@@ -101,7 +100,7 @@ namespace WPFStylus
         private void stylus_up(object sender, StylusEventArgs e)
         {
             // Find the best points
-            Point select_pt = selector.Select(listPoints);
+            Point select_pt = PointToScreen(selector.Select(listPoints));
             Console.Write(select_pt);
 
             // Set windows to transporent
@@ -119,6 +118,12 @@ namespace WPFStylus
             this.listPoints.Clear();
         }
 
-        
+        private void OnButtonKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                selector.showIcons(icBox);
+            else if (e.Key == Key.Escape)
+                selector.hideIcons(icBox);
+        }
     }
 }

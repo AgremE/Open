@@ -25,6 +25,7 @@ namespace WPFStylus
         }
 
         private IconBound boundary;
+        private Rectangle myRect;
 
         public Icon(double b_left, double b_right, double b_top, double b_bottom)
         {
@@ -80,19 +81,25 @@ namespace WPFStylus
         public void showArea(InkCanvas canvas)
         {
             // Add a Rectangle Element
-            Rectangle myRect = new Rectangle();
+            myRect = new Rectangle();
             myRect.Stroke = System.Windows.Media.Brushes.Black;
             myRect.Fill = System.Windows.Media.Brushes.SkyBlue;
+            myRect.Opacity = 0.5;
 
             //myRect.HorizontalAlignment = HorizontalAlignment.Left;
             //myRect.VerticalAlignment = VerticalAlignment.Center;
             Thickness margin = myRect.Margin;
             margin.Left = boundary.left;
-            margin.Top = boundary.top;
+            margin.Top = boundary.bottom;
             myRect.Margin = margin;
             myRect.Height = (boundary.top - boundary.bottom);
             myRect.Width = (boundary.right - boundary.left);
             canvas.Children.Add(myRect);
+        }
+
+        public void hideArea(InkCanvas canvas)
+        {
+            canvas.Children.Remove(myRect);
         }
     }
 }

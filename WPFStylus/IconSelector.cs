@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace WPFStylus
 {   
@@ -43,7 +44,7 @@ namespace WPFStylus
         {
             IconArray = new List<Icon>();
             // add NULL icon
-            IconArray.Add(new Icon(1, 2, 3, 4));
+            IconArray.Add(new Icon(1, 2, 4, 3));
         }
         
         public bool AddIcon(Icon i)
@@ -66,7 +67,7 @@ namespace WPFStylus
         {
             // remove icon from index
             if (i <= 0 || i >= IconArray.Count)
-                return new Icon(1, 2, 3, 4);
+                return new Icon(1, 2, 4, 3);
             Icon x = IconArray[i];
             IconArray.RemoveAt(i);
             return x;
@@ -168,6 +169,18 @@ namespace WPFStylus
                     return (int) (first.X - second.X);
                 }
             }
+        }
+
+        public void showIcons(InkCanvas canvas)
+        {
+            foreach (Icon icon in IconArray){
+                icon.showArea(canvas);
+            }
+        }
+
+        public void hideIcons(InkCanvas canvas)
+        {
+            canvas.Children.Clear();
         }
 
         // Bresenham's Line Algorithm 
