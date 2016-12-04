@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WPFStylus"
         mc:Ignorable="d"
         KeyDown="OnButtonKeyDown"
-        Title="o_pen" Visibility="Visible" WindowStyle="None" AllowsTransparency="True" WindowState="Maximized" Topmost="True" Background="#02FFFFFF">
+        Title="o_pen" Visibility="Visible" WindowStyle="None" AllowsTransparency="True" WindowState="Maximized" Topmost="True" Background="#02FFFFFF" Deactivated="deactivated">
     <StackPanel>
         <InkCanvas x:Name="icBox" StylusMove="stylus_move" Margin="0" EditingMode="GestureOnly" StylusUp="stylus_up" Background="#02FFFFFF"/>
     </StackPanel>

@@ -125,5 +125,11 @@ namespace WPFStylus
             else if (e.Key == Key.Escape)
                 selector.hideIcons(icBox);
         }
+
+        private void deactivated(object sender, EventArgs e)
+        {
+            Window window = (Window)sender;
+            window.Topmost = true;
+        }
     }
 }
