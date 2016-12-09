@@ -74,18 +74,19 @@ namespace WPFStylus
         }
 
         
-        public Point Select(List<Point> points)
+        public Icon Select(List<Point> points)
         {
             // Sort the points in the array list by x
             List<Point> preprocessed_pts = PreprocessPointsForCircleCompleting(points);
 
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
-            /*
+            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
+            
             foreach (Point x in preprocessed_pts)
             {
-                file.WriteLine(x.X + "          " + x.Y);
-            }*/
-            //file.Close();
+                file.WriteLine(points[0].X + "          " + points[0].Y);
+            }
+            file.Close();
+            
             if (!is_completeCircle(points))
             {
              //   file.WriteLine("Circle is not complete");
@@ -126,7 +127,7 @@ namespace WPFStylus
             int maxIndex = scores.ToList().IndexOf(maxValue);
 
             // Return the mid-point of that Icon
-            return IconArray[maxIndex].getMidPoint();
+            return IconArray[maxIndex];
         }
 
 

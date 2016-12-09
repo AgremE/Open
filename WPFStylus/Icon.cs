@@ -26,6 +26,7 @@ namespace WPFStylus
 
         private IconBound boundary;
         private Rectangle myRect;
+        private Boolean showing = false;
 
         public Icon(double b_left, double b_right, double b_top, double b_bottom)
         {
@@ -95,11 +96,15 @@ namespace WPFStylus
             myRect.Height = (boundary.top - boundary.bottom);
             myRect.Width = (boundary.right - boundary.left);
             canvas.Children.Add(myRect);
+
+            showing = true;
         }
 
         public void hideArea(InkCanvas canvas)
         {
             canvas.Children.Remove(myRect);
+            
+            showing = false;
         }
     }
 }

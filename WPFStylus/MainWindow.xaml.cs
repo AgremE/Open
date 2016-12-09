@@ -55,10 +55,48 @@ namespace WPFStylus
             icBox.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
 
             selector = new IconSelector();
-
+            
             // Add Dummy Icon
-            Icon i = new Icon(500, 700, 350, 300);
+            // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
+            Icon i = new Icon(181, 754, 201, 179);
             selector.AddIcon(i);
+            //close icon
+            i = new Icon(1205, 1250, 35, 0);
+            selector.AddIcon(i);
+            //C:/User
+            i = new Icon(181, 754, 223, 201);
+            selector.AddIcon(i);
+            //C:/Windows
+            i = new Icon(181, 754, 245, 223);
+            selector.AddIcon(i);
+            //Internetl explorer setting button top right coner
+            i = new Icon(1195, 1243, 80, 38);
+            selector.AddIcon(i);
+            //Internet explorer setting button
+            i = new Icon(845, 1243, 690, 645);
+            selector.AddIcon(i);
+            // button what new and tip in interent explorer
+            i = new Icon(845, 1243, 645, 600);
+            selector.AddIcon(i);
+           
+            //Setting button
+            i = new Icon(421, 451, 1060, 892);
+            selector.AddIcon(i);
+            // Navigator to kakoa program
+            //i = new Icon(917, 1016, 786, 745);
+            i = new Icon(885, 912, 820, 790);
+            selector.AddIcon(i);
+           // i = new Icon(892, 1060, 745, 723);
+           // Kakao Icon
+            i = new Icon(915, 940, 785, 755);
+            selector.AddIcon(i);
+            /*
+            i = new Icon(100, 200, 300, 100);
+            selector.AddIcon(i);
+            i = new Icon(50, 100, 200, 100);
+            selector.AddIcon(i);
+            i = new Icon(300, 400, 300, 100);
+            selector.AddIcon(i);*/
         }
 
         private void stylus_move(object sender, StylusEventArgs e)
@@ -100,7 +138,10 @@ namespace WPFStylus
         private void stylus_up(object sender, StylusEventArgs e)
         {
             // Find the best points
-            Point select_pt = PointToScreen(selector.Select(listPoints));
+            Icon select_icon = selector.Select(listPoints);
+            selector.hideIcons(icBox);
+            select_icon.showArea(icBox);
+            Point select_pt = PointToScreen(select_icon.getMidPoint());
             Console.Write(select_pt);
 
             // Set windows to transporent
@@ -124,10 +165,13 @@ namespace WPFStylus
                 selector.showIcons(icBox);
             else if (e.Key == Key.Escape)
                 selector.hideIcons(icBox);
+            else if (e.Key == Key.Q)
+                Application.Current.Shutdown();
         }
 
         private void deactivated(object sender, EventArgs e)
         {
+            // When ever deactivated, put this app back to topmost
             Window window = (Window)sender;
             window.Topmost = true;
         }
