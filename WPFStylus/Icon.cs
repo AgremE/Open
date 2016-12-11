@@ -100,6 +100,27 @@ namespace WPFStylus
             showing = true;
         }
 
+        public void showAreaRed(InkCanvas canvas)
+        {
+            // Add a Rectangle Element
+            myRect = new Rectangle();
+            myRect.Stroke = System.Windows.Media.Brushes.Black;
+            myRect.Fill = System.Windows.Media.Brushes.Red;
+            myRect.Opacity = 0.5;
+
+            //myRect.HorizontalAlignment = HorizontalAlignment.Left;
+            //myRect.VerticalAlignment = VerticalAlignment.Center;
+            Thickness margin = myRect.Margin;
+            margin.Left = boundary.left;
+            margin.Top = boundary.bottom;
+            myRect.Margin = margin;
+            myRect.Height = (boundary.top - boundary.bottom);
+            myRect.Width = (boundary.right - boundary.left);
+            canvas.Children.Add(myRect);
+
+            showing = true;
+        }
+
         public void hideArea(InkCanvas canvas)
         {
             canvas.Children.Remove(myRect);

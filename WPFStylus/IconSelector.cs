@@ -130,6 +130,12 @@ namespace WPFStylus
             return IconArray[maxIndex];
         }
 
+        public Icon randomIcon()
+        {
+            Random rnd = new Random();
+            return IconArray[rnd.Next(IconArray.Count)];
+        }
+
 
         /// <summary>
         /// Preprocess all the points from the stylus to be contineous and convert to int type
