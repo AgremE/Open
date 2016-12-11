@@ -22,7 +22,10 @@ namespace WPFStylus
         private IconSelector selector;
 
         private int status = 0;
+        private int penID = 0;
         private List<int> scenarios;
+        private List<int> pens;
+        private bool real = false;
 
 
         public MainWindow()
@@ -31,9 +34,20 @@ namespace WPFStylus
             icBox.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
 
             scenarios = new List<int>( new int[] { 0, 1, 2, 3, 4, 5 });
+            pens = new List<int>(new int[] { 0, 1, 2, 3});
+
+            MessageBoxResult result1 = MessageBox.Show("Is this real session?",
+    "Real session", MessageBoxButton.YesNo);
+            if (result1 == MessageBoxResult.Yes)
+                real = true;
+            else
+                real = false;
+
+            Shuffle(pens);
             Shuffle(scenarios);
+            Form1 m = new Form1(pens[penID++]);
+            m.ShowDialog();
             showScernario(scenarios[status++]);
-            
         }
 
         private void showScernario(int scerscernarioID)
@@ -185,6 +199,19 @@ namespace WPFStylus
 
             this.listPoints.Clear();
             selector.hideIcons(icBox);
+            if (status >= 6)
+            {
+                status = 0;
+                Shuffle(scenarios);
+                selector.hideIcons(icBox);
+                if (penID >= 4)
+                    Application.Current.Shutdown();
+                else
+                {
+                    Form1 m = new Form1(pens[penID++]);
+                    m.ShowDialog();
+                }
+            }
             showScernario(scenarios[status++]);
         }
 
