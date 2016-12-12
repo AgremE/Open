@@ -8,6 +8,6 @@
         KeyDown="OnButtonKeyDown"
         Title="o_pen" Visibility="Visible" WindowStyle="None" WindowState="Maximized" Background="#FFFFFF" Deactivated="deactivated">
     <StackPanel>
-        <InkCanvas x:Name="icBox" StylusMove="stylus_move" Margin="0" EditingMode="GestureOnly" StylusUp="stylus_up" Background="#02FFFFFF"/>
+        <InkCanvas x:Name="icBox" StylusDown="stylus_down" StylusMove="stylus_move" Margin="0" EditingMode="GestureOnly" StylusUp="stylus_up" Background="#02FFFFFF"/>
     </StackPanel>
 </Window>

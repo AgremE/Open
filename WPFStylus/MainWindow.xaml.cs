@@ -28,6 +28,7 @@ namespace WPFStylus
         private Icon random_icon;
 
         private Stopwatch timer;
+        private double decision_time = 0;
 
         private DatabaseHandler database = null;
 
@@ -46,6 +47,9 @@ namespace WPFStylus
                 database = new DatabaseHandler();   
             }
             // database = null
+
+            // initalize timer
+            timer = new Stopwatch();
 
             // randomize method
             Shuffle(pens);
@@ -83,6 +87,9 @@ namespace WPFStylus
             selector.showIcons(icBox);
             random_icon.hideArea(icBox);
             random_icon.showAreaRed(icBox);
+
+            // screen is done, (re)start timer
+            timer.Restart();
         }
 
         // Shuffle list
@@ -157,6 +164,15 @@ namespace WPFStylus
             }
         }
 
+        private void stylus_down(object sender, StylusEventArgs e)
+        {
+            // stylus is down
+            // decision time
+            timer.Stop();
+            decision_time = timer.ElapsedMilliseconds / 1000d;
+            timer.Start();
+        }
+
         private void stylus_move(object sender, StylusEventArgs e)
         {
             Point pos = e.GetPosition(this);
@@ -166,6 +182,10 @@ namespace WPFStylus
 
         private void stylus_up(object sender, StylusEventArgs e)
         {
+            // stylus is up
+            timer.Stop();
+            double eclipsed_time = timer.ElapsedMilliseconds / 1000d;
+
             // Find the best points
             Icon select_icon = selector.Select(listPoints);
             int correct = 0;
@@ -174,7 +194,8 @@ namespace WPFStylus
 
             // if the input is real test -- not training
             if (database != null)
-                database.logData(scenarios[scenarioID - 1], pens[penID - 1], correct);
+                database.logData(eclipsed_time, decision_time, 
+                    scenarios[scenarioID - 1], pens[penID - 1], correct);
 
             //selector.hideIcons(icBox);
             //select_icon.showArea(icBox);
@@ -264,9 +285,11 @@ class DatabaseHandler
         return null;
     }
 
-    public void logData(int scenario, int input_method, int correctness)
+    public void logData(double op_time, double decision_time, int scenario, int input_method, int correctness)
     {  
-        talkToDatabase("insert into `open`.`selection` (`scenarioID`, `penID`, `right`, `user`) values('" 
+        talkToDatabase("insert into `open`.`selection` (`operation_time`, `decision_time`, `scenarioID`, `penID`, `right`, `user`) values('" 
+            + op_time + "','"
+            + decision_time + "','"
             + scenario + "','" 
             + input_method + "','" 
             + correctness + "','"
