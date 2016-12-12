@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -21,12 +23,12 @@ namespace WPFStylus
 
         private IconSelector selector;
 
-        private int status = 0;
+        private int scenarioID = 0;
         private int penID = 0;
         private List<int> scenarios;
-        private List<int> pens;
-        private bool real = false;
-
+        private List<int> pens;    // type of input (pen type, input method)
+        private bool real = false; // real session (true) or traning (false)
+        private Icon random_icon;
 
         public MainWindow()
         {
@@ -43,11 +45,12 @@ namespace WPFStylus
             else
                 real = false;
 
+            // randomize method
             Shuffle(pens);
             Shuffle(scenarios);
             Form1 m = new Form1(pens[penID++]);
             m.ShowDialog();
-            showScernario(scenarios[status++]);
+            showScernario(scenarios[scenarioID++]);
         }
 
         private void showScernario(int scerscernarioID)
@@ -74,7 +77,7 @@ namespace WPFStylus
                     addLargeIcons(true);
                     break;
             }
-            Icon random_icon = selector.randomIcon();
+            random_icon = selector.randomIcon();
             selector.showIcons(icBox);
             random_icon.hideArea(icBox);
             random_icon.showAreaRed(icBox);
@@ -192,6 +195,29 @@ namespace WPFStylus
         {
             // Find the best points
             Icon select_icon = selector.Select(listPoints);
+            int right = 0;
+            if (select_icon == random_icon)
+                right = 1;
+            try
+            {
+                //This is my connection string i have assigned the database file address path  
+                string MyConnection2 = "datasource=localhost;port=3306;username=root;password=chayanin";
+                //This is my insert query in which i am taking input from the user through windows forms  
+                string Query = "insert into `open`.`selection` (`scenarioID`, `penID`, `right`) values('" +scenarios[scenarioID-1] + "','" + pens[penID-1] + "','" + right.ToString()+ "');";
+                //This is  MySqlConnection here i have created the object and pass my connection string.  
+                MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
+                //This is command class which will handle the query and connection object.  
+                MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
+                MySqlDataReader MyReader2;
+                MyConn2.Open();
+                MyReader2 = MyCommand2.ExecuteReader();     // Here our query will be executed and data saved into the database.
+                MyConn2.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
             //selector.hideIcons(icBox);
             //select_icon.showArea(icBox);
             //Point select_pt = PointToScreen(select_icon.getMidPoint());
@@ -199,11 +225,11 @@ namespace WPFStylus
 
             this.listPoints.Clear();
             selector.hideIcons(icBox);
-            if (status >= 6)
+            if (scenarioID >= 6)
             {
-                status = 0;
+                scenarioID = 0;
                 Shuffle(scenarios);
-                selector.hideIcons(icBox);
+                // selector.hideIcons(icBox);
                 if (penID >= 4)
                     Application.Current.Shutdown();
                 else
@@ -212,7 +238,7 @@ namespace WPFStylus
                     m.ShowDialog();
                 }
             }
-            showScernario(scenarios[status++]);
+            showScernario(scenarios[scenarioID++]);
         }
 
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
