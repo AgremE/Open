@@ -3,8 +3,6 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 
@@ -27,8 +25,11 @@ namespace WPFStylus
         private int penID = 0;
         private List<int> scenarios;
         private List<int> pens;    // type of input (pen type, input method)
-        private bool real = false; // real session (true) or traning (false)
         private Icon random_icon;
+
+        private Stopwatch timer;
+
+        private DatabaseHandler database = null;
 
         public MainWindow()
         {
@@ -41,9 +42,10 @@ namespace WPFStylus
             MessageBoxResult result1 = MessageBox.Show("Is this real session?",
     "Real session", MessageBoxButton.YesNo);
             if (result1 == MessageBoxResult.Yes)
-                real = true;
-            else
-                real = false;
+            {
+                database = new DatabaseHandler();   
+            }
+            // database = null
 
             // randomize method
             Shuffle(pens);
@@ -162,61 +164,17 @@ namespace WPFStylus
             this.listPoints.Add(pos);
         }
 
-        //Call to check the circle is complete or not
-        // Dont use arrayList.exist() each point is an object they treat them differently
-        public bool checkFullCircle()
-        {
-            int x_coordinate = (int)PointToScreen((Point)this.listPoints[0]).X;
-            int y_coordinate = (int)PointToScreen((Point)this.listPoints[0]).Y;
-            for(int i = 1; i < this.listPoints.Count; i++)
-            {
-                int x_coordinate_second = (int)PointToScreen((Point)this.listPoints[0]).X;
-                int y_coordinate_seconde = (int)PointToScreen((Point)this.listPoints[0]).Y;
-                if ((x_coordinate == x_coordinate_second) && (y_coordinate == y_coordinate_seconde))
-                {
-                    return true;
-                }
-            }
-            return false; 
-        }
-
-        // Call only when the circle is not complete
-        public void completeCircle()
-        {
-
-            int x_coordinate = (int)PointToScreen((Point)this.listPoints[0]).X;
-            int y_coordinate = (int)PointToScreen((Point)this.listPoints[0]).Y;
-
-            int x_coordinate_end = (int)PointToScreen((Point)this.listPoints[listPoints.Count - 1]).X;
-            int y_coordinate_end = (int)PointToScreen((Point)this.listPoints[listPoints.Count - 1]).Y;
-        }
-
         private void stylus_up(object sender, StylusEventArgs e)
         {
             // Find the best points
             Icon select_icon = selector.Select(listPoints);
-            int right = 0;
+            int correct = 0;
             if (select_icon == random_icon)
-                right = 1;
-            try
-            {
-                //This is my connection string i have assigned the database file address path  
-                string MyConnection2 = "datasource=localhost;port=3306;username=root;password=chayanin";
-                //This is my insert query in which i am taking input from the user through windows forms  
-                string Query = "insert into `open`.`selection` (`scenarioID`, `penID`, `right`) values('" +scenarios[scenarioID-1] + "','" + pens[penID-1] + "','" + right.ToString()+ "');";
-                //This is  MySqlConnection here i have created the object and pass my connection string.  
-                MySqlConnection MyConn2 = new MySqlConnection(MyConnection2);
-                //This is command class which will handle the query and connection object.  
-                MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
-                MySqlDataReader MyReader2;
-                MyConn2.Open();
-                MyReader2 = MyCommand2.ExecuteReader();     // Here our query will be executed and data saved into the database.
-                MyConn2.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+                correct = 1;
+
+            // if the input is real test -- not training
+            if (database != null)
+                database.logData(scenarios[scenarioID - 1], pens[penID - 1], correct);
 
             //selector.hideIcons(icBox);
             //select_icon.showArea(icBox);
@@ -257,5 +215,76 @@ namespace WPFStylus
             Window window = (Window)sender;
             //window.Topmost = true;
         }
+    }
+}
+
+class DatabaseHandler
+{
+    //This is my connection string i have assigned the database file address path
+    private string connectionKey = "datasource=localhost;port=3306;username=root;password=chayanin";
+    private int userID;
+
+    MySqlConnection connection;
+
+    public DatabaseHandler()
+    {   
+        // connection
+        try
+        {
+            connection = new MySqlConnection(connectionKey);
+            connection.Open();
+        }
+        catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
+        // TODO: get user ID here
+        // insert dummy user int
+        talkToDatabase("insert into open.user (`dummy`) values (8);").Close();
+        userID = getMaxId("open.user");
+    }
+
+    MySqlDataReader talkToDatabase(string query)
+    {
+        try
+        {
+
+            //command class which will handle the query and connection object. 
+            MySqlCommand cmd = new MySqlCommand(query, connection);
+
+            // Here our query will be executed and data saved into the database
+            MySqlDataReader reader;
+            reader = cmd.ExecuteReader();
+
+            return reader;
+        } catch (Exception e)
+        {
+            MessageBox.Show(e.Message);
+        }
+        return null;
+    }
+
+    public void logData(int scenario, int input_method, int correctness)
+    {  
+        talkToDatabase("insert into `open`.`selection` (`scenarioID`, `penID`, `right`, `user`) values('" 
+            + scenario + "','" 
+            + input_method + "','" 
+            + correctness + "','"
+            + userID
+            + "');")
+            .Close();
+    }
+
+    // get max id from table
+    int getMaxId(String tableName)
+    {
+        MySqlDataReader r = talkToDatabase(String.Format("select MAX(id) from {0}", tableName));
+        int max = -1;
+        if (r.Read())
+        {
+            max = r.GetInt32(0);
+        }
+        r.Close();
+        return max;
     }
 }
