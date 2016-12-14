@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
-
 namespace WPFStylus
 {
     /// <summary>
@@ -25,7 +24,7 @@ namespace WPFStylus
         private int penID = 0;
         private List<int> scenarios;
         private List<int> pens;    // type of input (pen type, input method)
-        private Icon random_icon;
+        private Icon random_icon = null;
 
         private Stopwatch timer;
         private double decision_time = 0;
@@ -37,7 +36,7 @@ namespace WPFStylus
             InitializeComponent();
             icBox.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
 
-            scenarios = new List<int>( new int[] { 0, 1, 2, 3, 4, 5 });
+            scenarios = new List<int>( new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
             pens = new List<int>(new int[] { 0, 1, 2, 3});
 
             MessageBoxResult result1 = MessageBox.Show("Is this real session?",
@@ -65,24 +64,34 @@ namespace WPFStylus
             switch (scerscernarioID)
             {
                 case 0:
-                    addSmallIcons(false);
+                    addSmallIcons(0);
                     break;
                 case 1:
-                    addSmallIcons(true);
+                    addSmallIcons(1);
                     break;
                 case 2:
-                    addListView(false);
+                    addSmallIcons(2);
                     break;
                 case 3:
-                    addListView(true);
+                    addListView(0);
                     break;
                 case 4:
-                    addLargeIcons(false);
+                    addListView(1);
                     break;
                 case 5:
-                    addLargeIcons(true);
+                    addListView(2);
+                    break;
+                case 6:
+                    addLargeIcons(0);
+                    break;
+                case 7:
+                    addLargeIcons(1);
+                    break;
+                case 8:
+                    addLargeIcons(2);
                     break;
             }
+            // send coordinate of random icon here
             random_icon = selector.randomIcon();
             selector.showIcons(icBox);
             random_icon.hideArea(icBox);
@@ -107,60 +116,83 @@ namespace WPFStylus
                 list[n] = value;
             }
         }
-
-        private void addListView(bool sep)
+        // zero is no space
+        // one is small space
+        // two is big space
+        private void addListView(int spaceType)
         {
-            int y = 0;
-            while (y <= 800)
+            int y =22;
+            while (true)
             {
                 // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                 Icon i = new Icon(181, 754, y+22, y);
                 selector.AddIcon(i);
                 y += 22;
-                if (sep)
+                if(y >= 700)
+                {
+                    break;
+                }
+                if (spaceType == 1)
                     y += 8;
+                else if(spaceType == 2)
+                {
+                    y += 16;
+                }
             }
         }
 
-        private void addLargeIcons(bool sep)
+        private void addLargeIcons(int spaceType)
         {
-            int x=0, y = 0;
+            int x=81, y = 81;
             while (x <= 1200)
             {
-                while (y <= 800)
+                while (y <= 700)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x+81, y + 81, y);
                     selector.AddIcon(i);
                     y += 81;
-                    if (sep)
+                    if (spaceType == 1)
                         y += 8;
+                    else if(spaceType == 2)
+                    {
+                        y += 16;
+                    }
                 }
                 x += 81;
-                y = 0;
-                if (sep)
+                y = 81;
+                if (spaceType == 1)
                     x += 8;
+                else if(spaceType == 2)
+                {
+                    x += 16;
+                }
             }
         }
 
-        private void addSmallIcons(bool sep)
+        private void addSmallIcons(int spaceType )
         {
-            int x = 0, y = 0;
+            int x = 27, y = 27;
             while (x <= 1200)
             {
-                while (y <= 800)
+                while (y <= 700)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x + 27, y + 27, y);
                     selector.AddIcon(i);
                     y += 27;
-                    if (sep)
+                    if (spaceType == 1)
                         y += 8;
+                    else if(spaceType == 2)
+                        y += 16;
                 }
                 x += 27;
-                y = 0;
-                if (sep)
+                y = 27;
+                if (spaceType == 1)
                     x += 8;
+                else if(spaceType == 2){
+                    x += 16;
+                }
             }
         }
 
@@ -185,9 +217,10 @@ namespace WPFStylus
             // stylus is up
             timer.Stop();
             double eclipsed_time = timer.ElapsedMilliseconds / 1000d;
-
             // Find the best points
             Icon select_icon = selector.Select(listPoints);
+            Point seletedPoint = select_icon.getMidPoint();
+            Point realPoint = random_icon.getMidPoint();
             int correct = 0;
             if (select_icon == random_icon)
                 correct = 1;
@@ -195,7 +228,8 @@ namespace WPFStylus
             // if the input is real test -- not training
             if (database != null)
                 database.logData(eclipsed_time, decision_time, 
-                    scenarios[scenarioID - 1], pens[penID - 1], correct);
+                    scenarios[scenarioID - 1], pens[penID - 1], correct, listPoints
+                                ,realPoint,seletedPoint);
 
             //selector.hideIcons(icBox);
             //select_icon.showArea(icBox);
@@ -204,12 +238,12 @@ namespace WPFStylus
 
             this.listPoints.Clear();
             selector.hideIcons(icBox);
-            if (scenarioID >= 6)
+            if (scenarioID >= scenarios.Count)
             {
                 scenarioID = 0;
                 Shuffle(scenarios);
                 // selector.hideIcons(icBox);
-                if (penID >= 4)
+                if (penID >= pens.Count)
                     Application.Current.Shutdown();
                 else
                 {
@@ -247,6 +281,8 @@ class DatabaseHandler
 
     MySqlConnection connection;
 
+    public object JavaScriptSerializer { get; private set; }
+
     public DatabaseHandler()
     {   
         // connection
@@ -274,7 +310,7 @@ class DatabaseHandler
             MySqlCommand cmd = new MySqlCommand(query, connection);
 
             // Here our query will be executed and data saved into the database
-            MySqlDataReader reader;
+            MySqlDataReader reader; 
             reader = cmd.ExecuteReader();
 
             return reader;
@@ -285,19 +321,46 @@ class DatabaseHandler
         return null;
     }
 
-    public void logData(double op_time, double decision_time, int scenario, int input_method, int correctness)
-    {  
-        talkToDatabase("insert into `open`.`selection` (`operation_time`, `decision_time`, `scenarioID`, `penID`, `right`, `user`) values('" 
+    public void logData(double op_time, double decision_time, int scenario, int input_method, 
+                        int correctness, List<Point> listPoint, Point real_icon, Point selectedIcon)
+    {
+        // Conver all the point into Json file
+        String selected_icon_pos = this.pointToString(selectedIcon);
+        String real_icon_pos = this.pointToString(real_icon);
+        String pointspos = this.listPointsToString(listPoint);
+        talkToDatabase("insert into `open`.`selection` (`operation_time`, `decision_time`, `scenarioID`, `penID`, `right`, `user`,`selected_icon_pos`,`real_icon_pos`,`listpoint_pos`) values('"
             + op_time + "','"
             + decision_time + "','"
             + scenario + "','" 
             + input_method + "','" 
             + correctness + "','"
-            + userID
+            + userID + "','"
+            + selected_icon_pos + "','"
+            + real_icon_pos + "','"
+            + pointspos
             + "');")
             .Close();
     }
 
+    public String pointToString(Point pos)
+    {
+        int x = (int)pos.X;
+        int y = (int)pos.Y;
+        return x.ToString() + "," + y.ToString();
+    }
+
+    public String listPointsToString(List<Point> poses)
+    {
+        String content = "";
+        foreach(Point pos in poses)
+        {
+            /*int x = (int)pos.X;
+            int y = (int)pos.Y;*/
+            content = String.Concat(content, pos.X +
+                                    "," + pos.Y + ":");
+        }
+        return content;
+    }
     // get max id from table
     int getMaxId(String tableName)
     {
