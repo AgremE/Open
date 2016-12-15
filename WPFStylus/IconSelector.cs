@@ -82,7 +82,10 @@ namespace WPFStylus
             {
                 bool allinicon = true;
                 for (int j = 0; j < points.Count; j++)
+                {
+                    //Console.WriteLine(IconArray[i].InArea(points[j]));
                     allinicon = allinicon && IconArray[i].InArea(points[j]);
+                }
                 if (allinicon)
                     return IconArray[i];
             }

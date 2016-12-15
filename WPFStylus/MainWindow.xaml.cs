@@ -31,6 +31,8 @@ namespace WPFStylus
         private Stopwatch timer;
         private double decision_time = 0;
 
+        private int trail = 11; // Trail per each Input + 1
+
         private DatabaseHandler database = null;
 
         public MainWindow()
@@ -49,6 +51,10 @@ namespace WPFStylus
             if (result1 == MessageBoxResult.Yes)
             {
                 database = new DatabaseHandler();   
+            }
+            else
+            {
+                trail = 0;
             }
             // database = null
 
@@ -228,7 +234,7 @@ namespace WPFStylus
             double eclipsed_time = timer.ElapsedMilliseconds / 1000d;
             // Find the best points
             Icon select_icon;
-            if (penID-1 == 1 || penID-1 == 3)
+            if (pens[penID - 1] == 1 || pens[penID - 1] == 3)
                 select_icon = selector.SelectTap(listPoints);
             else
                 select_icon = selector.SelectCircle(listPoints);
@@ -257,9 +263,9 @@ namespace WPFStylus
                 scenarioID = 0;
                 Shuffle(scenarios);
                 // selector.hideIcons(icBox);
-                if (penID >= pens.Count)
+                if (penID > pens.Count)
                     Application.Current.Shutdown();
-                else if (trailID >= 12)
+                else if (trailID >= trail)
                 {
                     PenForm m = new PenForm(pens[penID++]);
                     m.ShowDialog();
