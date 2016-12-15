@@ -40,7 +40,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(620, 38);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Please rest for at least 5 seconds";
+            this.label1.Text = "Please rest for at least 3 seconds";
             // 
             // ready_btn
             // 

@@ -73,40 +73,33 @@ namespace WPFStylus
             return x;
         }
 
+
+        // Select the best icon based for tapping method
+        // Icon will be selected if all points are in one icon
+        public Icon SelectTap(List<Point> points)
+        {
+            for (int i = 0; i < IconArray.Count; i++)
+            {
+                bool allinicon = true;
+                for (int j = 0; j < points.Count; j++)
+                    allinicon = allinicon && IconArray[i].InArea(points[j]);
+                if (allinicon)
+                    return IconArray[i];
+            }
+            return new Icon(1, 2, 4, 3);
+        }
+
         
-        public Icon Select(List<Point> points)
+        public Icon SelectCircle(List<Point> points)
         {
             // Sort the points in the array list by x
             List<Point> preprocessed_pts = PreprocessPointsForCircleCompleting(points);
-
-            System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
-            
-            foreach (Point x in preprocessed_pts)
-            {
-                file.WriteLine(points[0].X + "          " + points[0].Y);
-            }
-            file.Close();
             
             if (!is_completeCircle(points))
-            {
-             //   file.WriteLine("Circle is not complete");
                 points = completeTheCircleByLine(points);
-            }
-            /*
-            file.WriteLine("There after complete the cirlce");
-            
-            foreach (Point x in preprocessed_pts)
-            {
-                file.WriteLine(x.X + "          " + x.Y);
-            }
-            file.Close();
-            */
+
             preprocessed_pts = preprocessed_pts.Distinct().ToList();
             preprocessed_pts.Sort(new PointComparer());
-            
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\CS472\Desktop\Pie's workspace\WriteLines2.txt", true);
-            
-
 
             // scoring
             double[] scores = new double[IconArray.Count];

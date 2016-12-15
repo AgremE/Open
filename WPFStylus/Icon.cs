@@ -69,6 +69,12 @@ namespace WPFStylus
             return Math.Max(up - down, 0);
         }
 
+        // Given a point p, find whether this point is in 
+        public bool InArea(Point p)
+        {
+            return p.X >= boundary.left && p.X <= boundary.right && p.Y <= boundary.top && p.Y >= boundary.bottom;
+        }
+
         public double getArea()
         {
             return (boundary.right - boundary.left) * (boundary.top - boundary.bottom);
@@ -81,21 +87,11 @@ namespace WPFStylus
 
         public void showArea(InkCanvas canvas)
         {
-            /*Button btn = new Button();
-            Thickness margin = btn.Margin;
-            margin.Left = boundary.left;
-            margin.Top = boundary.bottom;
-            btn.Margin = margin;
-            btn.Height = (boundary.top - boundary.bottom);
-            btn.Width = (boundary.right - boundary.left);
-            btn.
-            canvas.Children.Add(btn);*/
             // Add a Rectangle Element
             myRect = new Rectangle();
             myRect.Stroke = System.Windows.Media.Brushes.Black;
             myRect.Fill = System.Windows.Media.Brushes.SkyBlue;
             myRect.Opacity = 0.5;
-            myRect.StylusDown += rec_stylus_down;
 
             //myRect.HorizontalAlignment = HorizontalAlignment.Left;
             //myRect.VerticalAlignment = VerticalAlignment.Center;
@@ -107,16 +103,6 @@ namespace WPFStylus
             myRect.Width = (boundary.right - boundary.left);
             canvas.Children.Add(myRect);
         }
-
-        private void rec_stylus_down(object sender, StylusEventArgs e)
-        {
-            MessageBox.Show("Test", "Tewsting");
-        }
-
-        /*private void click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Testing", "Testing");
-        }*/
 
         public void showAreaRed(InkCanvas canvas)
         {

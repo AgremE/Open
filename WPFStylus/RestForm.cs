@@ -19,7 +19,7 @@ namespace WPFStylus
             InitializeComponent();
             t = new DispatcherTimer();
             t.Tick += new EventHandler(timer_tick); ;
-            t.Interval = new TimeSpan(0, 0, 5);
+            t.Interval = new TimeSpan(0, 0, 3);
             t.Start();
             
         }

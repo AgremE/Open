@@ -126,14 +126,14 @@ namespace WPFStylus
         // two is big space
         private void addListView(int spaceType)
         {
-            int y =0;
+            int y = 50;
             while (true)
             {
                 // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                 Icon i = new Icon(181, 754, y+22, y);
                 selector.AddIcon(i);
                 y += 22;
-                if(y >= 750)
+                if(y >= 700)
                 {
                     break;
                 }
@@ -148,10 +148,10 @@ namespace WPFStylus
 
         private void addLargeIcons(int spaceType)
         {
-            int x=0, y = 0;
-            while (x <= 1200)
+            int x=50, y = 50;
+            while (x <= 1100)
             {
-                while (y <= 750)
+                while (y <= 700)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x+81, y + 81, y);
@@ -165,7 +165,7 @@ namespace WPFStylus
                     }
                 }
                 x += 81;
-                y = 0;
+                y = 50;
                 if (spaceType == 1)
                     x += 8;
                 else if(spaceType == 2)
@@ -177,10 +177,10 @@ namespace WPFStylus
 
         private void addSmallIcons(int spaceType )
         {
-            int x = 0, y = 0;
-            while (x <= 1200)
+            int x = 50, y = 50;
+            while (x <= 1100)
             {
-                while (y <= 750)
+                while (y <= 700)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x + 27, y + 27, y);
@@ -192,7 +192,7 @@ namespace WPFStylus
                         y += 16;
                 }
                 x += 27;
-                y = 0;
+                y = 50;
                 if (spaceType == 1)
                     x += 8;
                 else if(spaceType == 2){
@@ -222,12 +222,17 @@ namespace WPFStylus
         private void stylus_up(object sender, StylusEventArgs e)
         {
             // stylus is up
-            if (timer.ElapsedMilliseconds < 0.1)
+            if (timer.ElapsedMilliseconds < 100)
                 return;
             timer.Stop();
             double eclipsed_time = timer.ElapsedMilliseconds / 1000d;
             // Find the best points
-            Icon select_icon = selector.Select(listPoints);
+            Icon select_icon;
+            if (penID-1 == 1 || penID-1 == 3)
+                select_icon = selector.SelectTap(listPoints);
+            else
+                select_icon = selector.SelectCircle(listPoints);
+
             Point seletedPoint = select_icon.getMidPoint();
             Point realPoint = random_icon.getMidPoint();
             int correct = 0;
