@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace WPFStylus
 {
-    public partial class Form1 : Form
+    public partial class PenForm : Form
     {
-        public Form1(int id)
+        public PenForm(int id)
         {
             InitializeComponent();
             showPicture(id);

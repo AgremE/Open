@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Shapes;
 
 namespace WPFStylus
@@ -26,7 +27,6 @@ namespace WPFStylus
 
         private IconBound boundary;
         private Rectangle myRect;
-        private Boolean showing = false;
 
         public Icon(double b_left, double b_right, double b_top, double b_bottom)
         {
@@ -81,11 +81,21 @@ namespace WPFStylus
 
         public void showArea(InkCanvas canvas)
         {
+            /*Button btn = new Button();
+            Thickness margin = btn.Margin;
+            margin.Left = boundary.left;
+            margin.Top = boundary.bottom;
+            btn.Margin = margin;
+            btn.Height = (boundary.top - boundary.bottom);
+            btn.Width = (boundary.right - boundary.left);
+            btn.
+            canvas.Children.Add(btn);*/
             // Add a Rectangle Element
             myRect = new Rectangle();
             myRect.Stroke = System.Windows.Media.Brushes.Black;
             myRect.Fill = System.Windows.Media.Brushes.SkyBlue;
             myRect.Opacity = 0.5;
+            myRect.StylusDown += rec_stylus_down;
 
             //myRect.HorizontalAlignment = HorizontalAlignment.Left;
             //myRect.VerticalAlignment = VerticalAlignment.Center;
@@ -96,9 +106,17 @@ namespace WPFStylus
             myRect.Height = (boundary.top - boundary.bottom);
             myRect.Width = (boundary.right - boundary.left);
             canvas.Children.Add(myRect);
-
-            showing = true;
         }
+
+        private void rec_stylus_down(object sender, StylusEventArgs e)
+        {
+            MessageBox.Show("Test", "Tewsting");
+        }
+
+        /*private void click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Testing", "Testing");
+        }*/
 
         public void showAreaRed(InkCanvas canvas)
         {
@@ -117,15 +135,11 @@ namespace WPFStylus
             myRect.Height = (boundary.top - boundary.bottom);
             myRect.Width = (boundary.right - boundary.left);
             canvas.Children.Add(myRect);
-
-            showing = true;
         }
 
         public void hideArea(InkCanvas canvas)
         {
             canvas.Children.Remove(myRect);
-            
-            showing = false;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace WPFStylus
 {
-    partial class Form1
+    partial class PenForm
     {
         /// <summary>
         /// Required designer variable.
@@ -63,15 +63,17 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // Form1
+            // PenForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1500, 719);
+            this.ControlBox = false;
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
-            this.Name = "Form1";
+            this.Name = "PenForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();

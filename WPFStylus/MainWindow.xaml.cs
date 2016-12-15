@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Shapes;
 namespace WPFStylus
 {
     /// <summary>
@@ -22,6 +23,7 @@ namespace WPFStylus
 
         private int scenarioID = 0;
         private int penID = 0;
+        private int trailID = 0;
         private List<int> scenarios;
         private List<int> pens;    // type of input (pen type, input method)
         private Icon random_icon = null;
@@ -35,6 +37,9 @@ namespace WPFStylus
         {
             InitializeComponent();
             icBox.Height = System.Windows.SystemParameters.PrimaryScreenHeight;
+            icBox.StylusDown += stylus_down;
+            icBox.StylusMove += stylus_move;
+            icBox.StylusUp += stylus_up;
 
             scenarios = new List<int>( new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 });
             pens = new List<int>(new int[] { 0, 1, 2, 3});
@@ -53,7 +58,7 @@ namespace WPFStylus
             // randomize method
             Shuffle(pens);
             Shuffle(scenarios);
-            Form1 m = new Form1(pens[penID++]);
+            PenForm m = new PenForm(pens[penID++]);
             m.ShowDialog();
             showScernario(scenarios[scenarioID++]);
         }
@@ -121,14 +126,14 @@ namespace WPFStylus
         // two is big space
         private void addListView(int spaceType)
         {
-            int y =22;
+            int y =0;
             while (true)
             {
                 // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                 Icon i = new Icon(181, 754, y+22, y);
                 selector.AddIcon(i);
                 y += 22;
-                if(y >= 700)
+                if(y >= 750)
                 {
                     break;
                 }
@@ -143,10 +148,10 @@ namespace WPFStylus
 
         private void addLargeIcons(int spaceType)
         {
-            int x=81, y = 81;
+            int x=0, y = 0;
             while (x <= 1200)
             {
-                while (y <= 700)
+                while (y <= 750)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x+81, y + 81, y);
@@ -160,7 +165,7 @@ namespace WPFStylus
                     }
                 }
                 x += 81;
-                y = 81;
+                y = 0;
                 if (spaceType == 1)
                     x += 8;
                 else if(spaceType == 2)
@@ -172,10 +177,10 @@ namespace WPFStylus
 
         private void addSmallIcons(int spaceType )
         {
-            int x = 27, y = 27;
+            int x = 0, y = 0;
             while (x <= 1200)
             {
-                while (y <= 700)
+                while (y <= 750)
                 {
                     // Icon coordinat for explorer from drive C:/ProgramFIle(x86)
                     Icon i = new Icon(x, x + 27, y + 27, y);
@@ -187,7 +192,7 @@ namespace WPFStylus
                         y += 16;
                 }
                 x += 27;
-                y = 27;
+                y = 0;
                 if (spaceType == 1)
                     x += 8;
                 else if(spaceType == 2){
@@ -200,6 +205,8 @@ namespace WPFStylus
         {
             // stylus is down
             // decision time
+            if (timer.ElapsedMilliseconds < 100)
+                return;
             timer.Stop();
             decision_time = timer.ElapsedMilliseconds / 1000d;
             timer.Start();
@@ -215,6 +222,8 @@ namespace WPFStylus
         private void stylus_up(object sender, StylusEventArgs e)
         {
             // stylus is up
+            if (timer.ElapsedMilliseconds < 0.1)
+                return;
             timer.Stop();
             double eclipsed_time = timer.ElapsedMilliseconds / 1000d;
             // Find the best points
@@ -245,10 +254,17 @@ namespace WPFStylus
                 // selector.hideIcons(icBox);
                 if (penID >= pens.Count)
                     Application.Current.Shutdown();
+                else if (trailID >= 12)
+                {
+                    PenForm m = new PenForm(pens[penID++]);
+                    m.ShowDialog();
+                    trailID = 0;
+                }
                 else
                 {
-                    Form1 m = new Form1(pens[penID++]);
+                    RestForm m = new RestForm();
                     m.ShowDialog();
+                    trailID++;
                 }
             }
             showScernario(scenarios[scenarioID++]);
@@ -256,10 +272,11 @@ namespace WPFStylus
 
         private void OnButtonKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space)
-                selector.showIcons(icBox);
-            else if (e.Key == Key.Escape)
+            if (e.Key == Key.F5)
+            {
                 selector.hideIcons(icBox);
+                showScernario(scenarios[scenarioID-1]);
+            }
             else if (e.Key == Key.Q)
                 Application.Current.Shutdown();
         }
@@ -356,7 +373,7 @@ class DatabaseHandler
         {
             /*int x = (int)pos.X;
             int y = (int)pos.Y;*/
-            content = String.Concat(content, pos.X +
+        content = String.Concat(content, pos.X +
                                     "," + pos.Y + ":");
         }
         return content;
