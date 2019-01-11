@@ -8,5 +8,5 @@ with the screen using stylus.
 
 ## Requirment
 
-- An Device with windwo operative system install and touch screen capability
+- An Device with windows operative system install and touch screen capability
 - Visual Studio 2010 or Above
